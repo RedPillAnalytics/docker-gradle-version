@@ -1,12 +1,9 @@
-FROM gradle:latest
+FROM python
 
-ENV GRADLE_USER_HOME=.gradle
+# Install hub
+RUN apt-get update
 
-# Run the Update
-RUN apt-get update && apt-get upgrade -y
+# Install lastversion
+RUN pip3 install lastversion
 
-# Install awscli
-RUN apt-get install -y python3-pip
-RUN pip3 install awscli
-
-ENTRYPOINT ["/usr/bin/gradle"]
+ENTRYPOINT ["lastversion"]
