@@ -1,9 +1,15 @@
 FROM python
 
-# Install hub
-RUN apt-get update
-
+# Install go
 # Install lastversion
-RUN pip3 install lastversion
+# Install semver
+RUN apt-get update \
+    && apt-get install -y apt-utils golang \
+    && pip3 install lastversion \
+    && go get -u github.com/maykonlf/semver-cli/cmd/semver
 
-ENTRYPOINT ["lastversion"]
+COPY entrypoint.sh .
+
+RUN chmod u+x entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
