@@ -12,4 +12,7 @@ COPY entrypoint.sh .
 
 RUN chmod u+x entrypoint.sh
 
+# go install bin
+ENV PATH=~/go/bin:$PATH
+
 ENTRYPOINT ["./entrypoint.sh"]
