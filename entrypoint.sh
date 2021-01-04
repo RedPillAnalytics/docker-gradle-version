@@ -6,14 +6,18 @@ stable=`lastversion $1`
 if [[ $alpha == $stable ]]
 then
   semver init --release $stable
-  semver up release
+  semver up release > /dev/null
 else
   semver init --release $alpha
 fi
 version=`semver get release`
-if [[ $2 != 'master' ]]
+if [[ $2 != "master" && $2 != "main" ]]
 then
   version=$version-SNAPSHOT
 fi
 version="${version:1}"
 echo $version | tee version.txt
+
+# echo "Tests:"
+# cat version.txt
+# cat .semver.yaml
