@@ -1,5 +1,8 @@
 FROM python
 
+# Environment
+ENV GOBIN=/go/bin
+
 # Install go
 # Install lastversion
 # Install semver
@@ -13,6 +16,6 @@ COPY entrypoint.sh .
 RUN chmod u+x entrypoint.sh
 
 # go install bin
-ENV PATH=~/go/bin:/:$PATH
+ENV PATH=/:$GOBIN:$PATH
 
 ENTRYPOINT ["entrypoint.sh"]
