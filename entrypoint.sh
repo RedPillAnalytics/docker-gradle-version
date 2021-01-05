@@ -16,8 +16,9 @@ then
   version=$version-SNAPSHOT
 fi
 version="${version:1}"
-echo $version | tee version.txt
+echo version = $version >> gradle.properties
+echo $version
 
 # echo "Tests:"
-# cat version.txt
+# cat gradle.properties
 # cat .semver.yaml
