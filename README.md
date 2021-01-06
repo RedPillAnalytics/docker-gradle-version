@@ -17,7 +17,7 @@ Now, the cons:
 
 Through the years using [Gradle](https://gradle.org/) to build Java, Scala and Groovy projects, I've always used [Gradle plugins](https://plugins.gradle.org/) that automatically determine the `project.version` property based on the git history of commits and tags. When our CI/CD server simply copies the git repository instead of cloning it, we can't rely on using the git-ness of our repository at all. So I built this container image to use the GitHub API instead.
 
-My process centers around Java, Gradle, GitHub and Google Cloud Build, and that's what it's designed for. If your process needs to go in a different direction on any of these pieces, PRs are welcome, and I would love to support them.
+My process centers around Gradle, GitHub and Google Cloud Build, and that's what it's designed for. If your process needs to go in a different direction on any of these pieces, PRs are welcome, and I would love to support them.
 
 ## Implementation
 I've done very little new development here... I'm standing on the shoulders of giants and cobbling together a few magnificent pieces of OSS with a small `entrypoint.sh` that uses them together.
