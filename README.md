@@ -24,7 +24,7 @@ I've done very little new development here... I'm standing on the shoulders of g
 
 - [Last Version](https://github.com/dvershinin/lastversion): This is the real brains of the operation. This is an incredibly smart CLI that can get the last version of a release/tag/whatever working with most of the different public repositories that they might be published to.
 - [Semantic Versioning Tool](https://github.com/maykonlf/semver-cli): I didn't want to have to write the logic for bumping the different components of a semantic version, so `semver` handles this for me.
-- [Gradle File Version plugin](https://github.com/epitschke/gradle-file-versioning): I needed an easy hand-off point between my container image and Gradle, and this plugin made that very simple. I can write the expected output to the `version.txt` file, and with this plugin applied to a Gradle project, the version flows through transparently with no fuss.
+- [javaproperties-cli](https://javaproperties-cli.readthedocs.io/en/stable/index.html): A CLI for setting key=value pairs in property files. We use this to modify the `project` property in the `gradle.properties` file.
 - [Gradle GitHub Release plugin](https://github.com/BreadMoirai/github-release-gradle-plugin): To close the loop on the entire process, we need to publish releases back to GitHub. I've been using this plugin for years with great results.
 
 ## Standard Release
@@ -39,10 +39,9 @@ In our `cloudbuild.yaml` file, we include the `project-version` image as an earl
   waitFor: ['-']
 ```
 
-This is enough to to grab the latest release from GitHub, set the Gradle version using the `gradle-file-versioning` plugin.
-Nothing else has to be done.
-By default, this build step will bump the patch of our version.
-If we aren't building the `master` or `main` branches , then the image will automatically add `-SNAPSHOT` to the end of the version. In my git repository I always add the `version.txt` file that `gradle-file-versioning` uses to my `.gitignore` file. I know the purpose of that plugin really was to version this file in the repo, but since we pull the latest release from GitHub, this step is overwriting the file, so there is no reason to have it in the repo at all.
+This build step is enough to grab the latest release from GitHub, and set it in the `gradle.properties` file using `javaproperties`.
+By default, this build step will bump the patch portion of the `version` property.
+If we aren't building the `master` or `main` branches , then the image will automatically add `-SNAPSHOT` to the end of the version.
 
 ## Pre-Release
 If we want to bump anything other than just the patch of our semantic version, then we simply create a GitHub pre-release. The build step knows to use this version number, whatever it is without bumping, for the next release, and sets the Gradle version accordingly. We just need to make sure we construct our `github-release` closure accordingly, ensuring we set `overwrite = true` to overwrite the pre-release with a real release.
