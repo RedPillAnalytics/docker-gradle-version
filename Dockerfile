@@ -9,6 +9,7 @@ ENV GOBIN=/go/bin
 RUN apt-get update \
     && apt-get install -y apt-utils golang \
     && pip3 install lastversion \
+    && pip3 install javaproperties-cli \
     && go get -u github.com/maykonlf/semver-cli/cmd/semver
 
 COPY entrypoint.sh .
