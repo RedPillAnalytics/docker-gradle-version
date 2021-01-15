@@ -20,12 +20,12 @@ Through the years using [Gradle](https://gradle.org/) to build Java, Scala and G
 My process centers around Gradle, GitHub and Google Cloud Build, and that's what it's designed for. If your process needs to go in a different direction on any of these pieces, PRs are welcome, and I would love to support them.
 
 ## Implementation
-I've done very little new development here... I'm standing on the shoulders of giants and cobbling together a few magnificent pieces of OSS with a small `entrypoint.sh` that uses them together.
+I've done very little new development here... I'm standing on the shoulders of giants and cobbling together a few pieces of OSS with a small `entrypoint.sh` that uses them together.
 
 - [Last Version](https://github.com/dvershinin/lastversion): This is the real brains of the operation. This is an incredibly smart CLI that can get the last version of a release/tag/whatever working with most of the different public repositories that they might be published to.
 - [Semantic Versioning Tool](https://github.com/maykonlf/semver-cli): I didn't want to have to write the logic for bumping the different components of a semantic version, so `semver` handles this for me.
 - [javaproperties-cli](https://javaproperties-cli.readthedocs.io/en/stable/index.html): A CLI for setting key=value pairs in property files. We use this to modify the `version` property in the `gradle.properties` file.
-- [Gradle GitHub Release plugin](https://github.com/BreadMoirai/github-release-gradle-plugin): To close the loop on the entire process, we need to publish releases back to GitHub. I've been using this plugin for years with great results.
+- [Gradle GitHub Release plugin](https://github.com/BreadMoirai/github-release-gradle-plugin): To close the loop on the entire process, we need to publish releases back to GitHub. I've been using this plugin for years with great results. I'd like to support a non-Gradle approach to this, perhaps with a `curl` command.
 
 ## Standard Release
 
@@ -38,14 +38,14 @@ In our `cloudbuild.yaml` file, we include the `project-version` image as an earl
    - $BRANCH_NAME
   waitFor: ['-']
 ```
-
-This build step is enough to grab the latest release from GitHub, and set it in the `gradle.properties` file using `javaproperties`.
-In case you need either the version number or the tag name in other build steps not related to Gradle, these are also written to files called `version.txt` and `tag.txt` respectively.
-By default, this build step will bump the patch portion of the `version` property.
-If we aren't building the `master` or `main` branches , then the image will automatically add `-SNAPSHOT` to the end of the version.
+This build step is enough to grab the latest release name from GitHub and parse the version number out of it. We then do the following:
+* By default, we bump the *patch* portion of that semantic version (see [Pre-Release](#Pre-Release) for more options).
+* If we aren't building the `master` or `main` branches , add `-SNAPSHOT` to the end of our version.
+* Set `version` in the `gradle.properties` file using `javaproperties`.
+* Write our version and tag to `version.txt` and `tag.txt` respectively in case we need them in other non-Gradle tools  in subsequent build steps.
 
 ## Pre-Release
-If we want to bump anything other than just the patch of our semantic version, then we simply create a GitHub pre-release. The build step knows to use this version number, whatever it is without bumping, for the next release, and sets the Gradle version accordingly. We just need to make sure we construct our `github-release` closure accordingly, ensuring we set `overwrite = true` to overwrite the pre-release with a real release.
+If we want to bump anything other than just the patch of our semantic version, then we simply create a [GitHub pre-release](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository#creating-a-release). The build step knows to use this version number, whatever it is without bumping, for the next release, and sets all our markers accordingly. We just need to make sure we construct our `github-release` closure accordingly, ensuring we set `overwrite = true` to overwrite the pre-release with a real release.
 
 ```
 githubRelease {
