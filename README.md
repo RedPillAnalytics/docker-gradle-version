@@ -2,22 +2,22 @@
 
 ## Motivation
 I've been moving more of our builds off of [Jenkins](https://www.jenkins.io/) and on to [Google Cloud Build (GCB)](https://cloud.google.com/cloud-build).
-There are a lot of pros and cons when considering a move to GCB.
+There are pros and cons when considering a move to GCB.
 
 First the pros:
 - It's a managed service which is affordably priced, and very easy to use. No infrastructure.
-- Builds are easily tested using `gcloud builds submit`, so no more changing, committing, and pushing to see if our pipelines are working.
+- Builds are easily tested using `gcloud builds submit`, so no more changing, committing, and pushing to see if a pipeline works.
 - The "every step is simply a container" approach is so easy. Of course, other services use this same approach, but none as elegantly as GCB.
 
 Now, the cons:
 - The UI is terrible. They've made enhancements lately, but it's still terrible by any reasonable measurement.
-- Their focus seems to be on things that Google wants, not on what the community wants. I'm basing this solely on GitHub feedback, so consider the source is mostly opinion.
 - I have to repeat myself often with multiple `cloudbuild.yaml` files and multiple triggers, because of their disparate support with building PRs, branches, and tags, and some limitation in the `cloudbuild.yaml` syntax. I really, really hate this aspect.
+- Their focus seems to be on things that Google thinks we need, instead of what the community actually wants. I'm basing this on [issue feedback on GitHub](https://github.com/GoogleCloudPlatform/cloud-builders/issues/138), so consider this is mostly opinion. But the request for basic filtering by branch name with a single build trigger has been out there for years, and Google is reasonably cavalier in their response.
 - And finally (the main point for this repo), is that GCB repository clones either don't checkout a git repository at all (using the GitHub app), or the checkout is so shallow that it's barely usable.
 
 Through the years using [Gradle](https://gradle.org/) to build Java, Scala and Groovy projects, I've always used [Gradle plugins](https://plugins.gradle.org/) that automatically determine the `project.version` property based on the git history of commits and tags. When our CI/CD server simply copies the git repository instead of cloning it, we can't rely on using the git-ness of our repository at all. So I built this container image to use the GitHub API instead.
 
-My process centers around Java, Gradle, GitHub and Google Cloud Build, and that's what it's designed for. If your process needs to go in a different direction on any of these pieces, PRs are welcome, and I would love to support them.
+My process centers around Gradle, GitHub and Google Cloud Build, and that's what it's designed for. If your process needs to go in a different direction on any of these pieces, PRs are welcome, and I would love to support them.
 
 ## Implementation
 I've done very little new development here... I'm standing on the shoulders of giants and cobbling together a few magnificent pieces of OSS with a small `entrypoint.sh` that uses them together.
@@ -40,6 +40,7 @@ In our `cloudbuild.yaml` file, we include the `project-version` image as an earl
 ```
 
 This build step is enough to grab the latest release from GitHub, and set it in the `gradle.properties` file using `javaproperties`.
+In case you need either the version number or the tag name in other build steps not related to Gradle, these are also written to files called `version.txt` and `tag.txt` respectively.
 By default, this build step will bump the patch portion of the `version` property.
 If we aren't building the `master` or `main` branches , then the image will automatically add `-SNAPSHOT` to the end of the version.
 
