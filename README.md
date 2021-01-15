@@ -24,7 +24,7 @@ I've done very little new development here... I'm standing on the shoulders of g
 
 - [Last Version](https://github.com/dvershinin/lastversion): This is the real brains of the operation. This is an incredibly smart CLI that can get the last version of a release/tag/whatever working with most of the different public repositories that they might be published to.
 - [Semantic Versioning Tool](https://github.com/maykonlf/semver-cli): I didn't want to have to write the logic for bumping the different components of a semantic version, so `semver` handles this for me.
-- [javaproperties-cli](https://javaproperties-cli.readthedocs.io/en/stable/index.html): A CLI for setting key=value pairs in property files. We use this to modify the `project` property in the `gradle.properties` file.
+- [javaproperties-cli](https://javaproperties-cli.readthedocs.io/en/stable/index.html): A CLI for setting key=value pairs in property files. We use this to modify the `version` property in the `gradle.properties` file.
 - [Gradle GitHub Release plugin](https://github.com/BreadMoirai/github-release-gradle-plugin): To close the loop on the entire process, we need to publish releases back to GitHub. I've been using this plugin for years with great results.
 
 ## Standard Release
