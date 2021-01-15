@@ -1,14 +1,35 @@
 substitutions:
-  _IMAGE_NAME: project-version
+  # See if this is either a tag or a PR
+  # Replace "/" in branch names with "-"
+  _TAG_NAME: ${TAG_NAME:-${_HEAD_BRANCH/\//-}}
+  # Capture long and short versions of the repository name
+  _REPO_LONG: ${REPO_NAME#*/}
+  _REPO_SHORT: ${REPO_NAME#*-}
+  # If it's a PR, image tag will be the Head Branch
+  # If it's a tag, image tag will be the tag
+  # If it's not a tag or a PR, then it should be latest
+  _IMAGE_NAME: ${_REPO_SHORT}:${_TAG_NAME:-latest}
 steps:
 - name: 'gcr.io/kaniko-project/executor:latest'
   id: build
   args:
-  - --destination=gcr.io/$PROJECT_ID/$_IMAGE_NAME:$SHORT_SHA
+  - --destination=gcr.io/$PROJECT_ID/$_IMAGE_NAME
   - --cache=true
   - --cache-ttl=48h
   - --single-snapshot
   - --context=./
+- name: 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}'
+  id: run-tests
+  entrypoint: bash
+  args:
+    - '-cx'
+    - |
+       entrypoint.sh RedPillAnalytics/gradle-confluent develop \
+       && cat tag.txt \
+       && cat version.txt \
+       || exit 1
+  waitFor:
+    - build
 timeout: 3600s
 options:
   dynamic_substitutions: true

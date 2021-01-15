@@ -3,6 +3,8 @@
 # get file inputs
 repo=$1
 branch=$2
+tagfile="tag.txt"
+versionfile="version.txt"
 
 # properties files
 properties="gradle.properties"
@@ -10,6 +12,9 @@ properties="gradle.properties"
 # grab the stable and alpha versions from GitHub
 alpha=`lastversion --pre $1`
 stable=`lastversion $1`
+
+# just in case it exists already
+rm -f .semver.yaml
 
 # If there is no alpha version, then bump
 if [[ $alpha == $stable ]]
@@ -30,8 +35,13 @@ then
   tag=$tag-SNAPSHOT
 fi
 
+# write to a file for access across steps
+echo $tag > $tagfile
+
 # get non-tag version
 version="${tag:1}"
+# write to a file for access across steps
+echo $version > $versionfile
 
 # create the gradle.properties file if it isn't there
 touch $properties
@@ -40,7 +50,3 @@ touch $properties
 javaproperties set -o props.temp $properties version $version
 mv props.temp $properties
 echo $tag
-
-# echo "Tests:"
-# cat $properties
-# cat .semver.yaml
