@@ -25,8 +25,8 @@ steps:
     - '-cx'
     - |
        entrypoint.sh RedPillAnalytics/gradle-confluent develop \
-       && cat tag.txt \
-       && cat version.txt \
+       && cat stepvars/tag \
+       && cat stepvars/version \
        || exit 1
   waitFor:
     - build
