@@ -34,10 +34,9 @@ I've done very little new development here... I'm standing on the shoulders of g
 - [Semantic Versioning Tool](https://github.com/maykonlf/semver-cli): I didn't want to have to write the logic for bumping the different components of a semantic version, so `semver` handles this for me.
 - [javaproperties-cli](https://javaproperties-cli.readthedocs.io/en/stable/index.html): A CLI for setting key=value pairs in property files. We use this to modify the `version` property in the `gradle.properties` file.
 - [Gradle GitHub Release plugin](https://github.com/BreadMoirai/github-release-gradle-plugin): To close the loop on the entire process, we need to publish releases back to GitHub. I've been using this plugin for years with great results.
-- [GitHub CLI](https://cli.github.com/): For non-Gradle releases, the GitHub CLI can be used instead to publish releases back to GitHub. You can use [our pre-built container](https://github.com/RedPillAnalytics/docker-gh) for that as well. This repository is built using this technique, so take a look at [the `cloudbuild.yaml` file](cloudbuild.yaml) for an example. In this example, we don't build tags, but instead tag the image as part of the merge into master.
+- [GitHub CLI](https://cli.github.com/): For non-Gradle releases, the GitHub CLI can be used instead to publish releases back to GitHub. You can use [our pre-built container](https://github.com/RedPillAnalytics/docker-gh) for that as well. This repository is built using this technique, so take a look at [the `cloudbuild.yaml` file](cloudbuild.yaml) as a sample. In this example, we don't actually build tags, but instead tag the image as part of the merge into master.
 
 ## Standard Release
-
 In our `cloudbuild.yaml` file, we include the `project-version` image as an early step, passing the built-in GCB variables `$REPO_NAME` and `BRANCH_NAME`:
 ```
 - name: gcr.io/$PROJECT_ID/project-version
