@@ -3,8 +3,9 @@
 # get file inputs
 repo=$1
 branch=$2
-tagfile="tag.txt"
-versionfile="version.txt"
+stepvars="stepvars"
+tagfile="${stepvars}/tag.txt"
+versionfile="${stepvars}/version.txt"
 
 # properties files
 properties="gradle.properties"
