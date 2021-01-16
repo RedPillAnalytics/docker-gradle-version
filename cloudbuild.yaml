@@ -10,6 +10,12 @@ substitutions:
   # If it's not a tag or a PR, then it should be latest
   _IMAGE_NAME: ${_REPO_SHORT}:${_TAG_NAME:-latest}
 steps:
+- name: gcr.io/$PROJECT_ID/project-version
+  id: version
+  args:
+   - $REPO_NAME
+   - $BRANCH_NAME
+  waitFor: ['-']
 - name: 'gcr.io/kaniko-project/executor:latest'
   id: build
   args:
@@ -19,7 +25,7 @@ steps:
   - --single-snapshot
   - --context=./
 - name: 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}'
-  id: run-tests
+  id: test
   entrypoint: bash
   args:
     - '-cx'
@@ -30,6 +36,30 @@ steps:
        || exit 1
   waitFor:
     - build
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  id: tag-image
+  entrypoint: bash
+  args:
+   - '-cx'
+   - |
+      if [ $BRANCH_NAME == "master" ]
+      then
+        gcloud container images add-tag gcr.io/$PROJECT_ID/${_IMAGE_NAME} gcr.io/$PROJECT_ID/$_REPO_LONG:`<stepvars/version`
+      fi
+  waitFor:
+    - test
+- name: gcr.io/$PROJECT_ID/gh
+  id: release
+  entrypoint: bash
+  args:
+   - '-cx'
+   - |
+      if [ $BRANCH_NAME == "master" ]
+      then
+        gh release create `<stepvars/tag` --target master
+      fi
+  waitFor:
+    - test
 timeout: 3600s
 options:
   dynamic_substitutions: true
