@@ -42,7 +42,7 @@ This build step is enough to grab the latest release name from GitHub and parse 
 * By default, we bump the *patch* portion of that semantic version (see [Pre-Release](#Pre-Release) for more options).
 * If we aren't building the `master` or `main` branches , add `-SNAPSHOT` to the end of our version.
 * Set `version` in the `gradle.properties` file using `javaproperties`.
-* Write our version and tag to `version.txt` and `tag.txt` respectively in case we need them in other non-Gradle tools  in subsequent build steps.
+* Write our version and tag to `stepvars/version` and `stepvars/tag` respectively in case we need them in other non-Gradle tools in subsequent build steps.
 
 ## Pre-Release
 If we want to bump anything other than just the patch of our semantic version, then we simply create a [GitHub pre-release](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository#creating-a-release). The build step knows to use this version number, whatever it is without bumping, for the next release, and sets all our markers accordingly. We just need to make sure we construct our `github-release` closure accordingly, ensuring we set `overwrite = true` to overwrite the pre-release with a real release.
