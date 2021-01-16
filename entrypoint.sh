@@ -4,8 +4,8 @@
 repo=$1
 branch=$2
 stepvars="stepvars"
-tagfile="${stepvars}/tag.txt"
-versionfile="${stepvars}/version.txt"
+tagfile="${stepvars}/tag"
+versionfile="${stepvars}/version"
 
 # properties files
 properties="gradle.properties"
