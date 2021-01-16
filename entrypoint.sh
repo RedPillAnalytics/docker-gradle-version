@@ -6,6 +6,7 @@ branch=$2
 stepvars="stepvars"
 tagfile="${stepvars}/tag"
 versionfile="${stepvars}/version"
+default=0.1.0
 
 # Create stepvars directory if it doesn't exist
 mkdir -p stepvars
@@ -14,8 +15,13 @@ mkdir -p stepvars
 properties="gradle.properties"
 
 # grab the stable and alpha versions from GitHub
-alpha=`lastversion --pre $1`
-stable=`lastversion $1`
+alpha=`lastversion --pre $1 2> /dev/null`
+stable=`lastversion $1 2> /dev/null`
+
+if [[ -z $alpha ]]
+then
+  alpha=$default
+fi
 
 # just in case it exists already
 rm -f .semver.yaml
