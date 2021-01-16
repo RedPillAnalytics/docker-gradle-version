@@ -19,6 +19,13 @@ Through the years using [Gradle](https://gradle.org/) to build Java, Scala and G
 
 My process centers around Gradle, GitHub and Google Cloud Build, and that's what it's designed for. If your process needs to go in a different direction on any of these pieces, PRs are welcome, and I would love to support them.
 
+## Publish this build step to GCB
+```
+git clone https://github.com/RedPillAnalytics/docker-project-version
+cd docker-project-version
+gcloud builds submit .
+```
+
 ## Implementation
 I've done very little new development here... I'm standing on the shoulders of giants and cobbling together a few pieces of OSS with a small `entrypoint.sh` that uses them together.
 
