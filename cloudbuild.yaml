@@ -56,7 +56,7 @@ steps:
    - |
       if [ $BRANCH_NAME == "master" ]
       then
-        gh release delete -R $REPO_NAME `<stepvars/tag`
+        gh release delete -R $REPO_NAME `<stepvars/tag` || exit 0
       fi
   waitFor:
     - test
