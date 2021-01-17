@@ -6,13 +6,14 @@ There are pros and cons when considering a move to GCB.
 
 First the pros:
 - It's a managed service which is affordably priced, and very easy to use. No infrastructure.
-- Builds are easily tested using `gcloud builds submit .`, so no more changing, committing, and pushing to see if a pipeline works.
+- Builds are easily tested using `gcloud builds submit .`, so no more changing, committing, and pushing to see if a pipeline works. But... there is no caching of `Dockerfile` build steps. So plan on debugging your `Dockerfile` builds locally.
 - The "every step is simply a container" approach is so easy. There are other services that use this same approach, but none as elegantly as GCB. No time wasted writing plugins... just build a container image... like this.
 
 Now, the cons:
 - The UI is terrible. They've made enhancements lately, but it's still terrible by any reasonable measurement.
 - I have to repeat myself with multiple triggers, because of their disparate support with building PRs, branches, and tags, and some limitation in the `cloudbuild.yaml` syntax. I really, really hate this aspect.
 - Their focus seems to be on things that Google thinks we need, instead of what the community actually wants. I'm basing this on [issue feedback on GitHub](https://github.com/GoogleCloudPlatform/cloud-builders/issues/138), so consider this is mostly opinion. But the request for basic filtering by branch name with a single build trigger has been out there for years, and Google is reasonably cavalier in their response. As you can read, they were suprised by the request, signaling to me that they do no competitive market research, because every single competitor offers this feature.
+- To do conditional logic, we have to rely on `bash` functionality, and this usually means overriding the container `entrypoint` and setting it to `bash` so we can do **IF THEN ELSE** logic. This clobbers thoughtful, easy to use build steps, and requires the engineer to understand the inner-workings of that build step. This is so not Googley.
 - And finally (the main point for this repo), is that GCB repository clones either don't clone the git repository at all (they copy it, using the GitHub app), or the checkout is so shallow that it's barely usable from a git perspective.
 
 Through the years using [Gradle](https://gradle.org/) to build Java, Scala and Groovy projects, I've always used [Gradle plugins](https://plugins.gradle.org/) that automatically determine the `project.version` property based on the git history of commits and tags. When our CI/CD server simply copies the git repository instead of cloning it, we can't rely on using the git-ness of our repository at all. So I built this container image to use the GitHub API instead.

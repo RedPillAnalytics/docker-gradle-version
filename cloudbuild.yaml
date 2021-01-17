@@ -30,7 +30,7 @@ steps:
   args:
     - '-cx'
     - |
-       entrypoint.sh RedPillAnalytics/gradle-confluent develop \
+       entrypoint.sh $REPO_NAME $BRANCH_NAME \
        && cat stepvars/tag \
        && cat stepvars/version \
        || exit 1
@@ -44,12 +44,24 @@ steps:
    - |
       if [ $BRANCH_NAME == "master" ]
       then
-        gcloud container images add-tag gcr.io/$PROJECT_ID/${_IMAGE_NAME} gcr.io/$PROJECT_ID/$_REPO_LONG:`<stepvars/version`
+        gcloud container images add-tag gcr.io/$PROJECT_ID/${_IMAGE_NAME} gcr.io/$PROJECT_ID/$_REPO_SHORT:`<stepvars/version`
       fi
   waitFor:
     - test
 - name: gcr.io/$PROJECT_ID/gh
-  id: release
+  id: delete-release
+  entrypoint: bash
+  args:
+   - '-cx'
+   - |
+      if [ $BRANCH_NAME == "master" ]
+      then
+        gh release delete -R $REPO_NAME `<stepvars/tag`
+      fi
+  waitFor:
+    - test
+- name: gcr.io/$PROJECT_ID/gh
+  id: create-release
   entrypoint: bash
   args:
    - '-cx'
@@ -59,7 +71,7 @@ steps:
         gh release create -R $REPO_NAME `<stepvars/tag` --target master
       fi
   waitFor:
-    - test
+    - delete-release
 timeout: 3600s
 options:
   dynamic_substitutions: true
