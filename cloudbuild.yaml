@@ -56,7 +56,7 @@ steps:
    - |
       if [ $BRANCH_NAME == "master" ]
       then
-        gh release create `<stepvars/tag` --target master
+        gh release create -R $REPO_NAME `<stepvars/tag` --target master
       fi
   waitFor:
     - test
