@@ -33,6 +33,7 @@ steps:
        entrypoint.sh $REPO_NAME $BRANCH_NAME \
        && cat stepvars/tag \
        && cat stepvars/version \
+       && cat gradle.properties \
        || exit 1
   waitFor:
     - build
