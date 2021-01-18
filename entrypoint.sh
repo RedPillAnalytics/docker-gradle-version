@@ -14,6 +14,13 @@ mkdir -p stepvars
 # properties files
 properties="gradle.properties"
 
+# create the gradle.properties file if it isn't there
+touch $properties
+
+# write githubToken to the properties file
+javaproperties set -o props.temp $properties githubToken $GITHUB_TOKEN
+mv props.temp $properties
+
 # grab the stable and alpha versions from GitHub
 alpha=`lastversion --pre $1 2> /dev/null`
 stable=`lastversion $1 2> /dev/null`
@@ -52,9 +59,6 @@ echo $tag > $tagfile
 version="${tag:1}"
 # write to a file for access across steps
 echo $version > $versionfile
-
-# create the gradle.properties file if it isn't there
-touch $properties
 
 # update the version property
 javaproperties set -o props.temp $properties version $version
