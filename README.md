@@ -71,7 +71,7 @@ githubRelease {
 ## Standard Release
 The build step in our `cloudbuild.yaml` file is enough to grab the latest release name from GitHub and parse the version number out of it. We then do the following:
 * By default, we bump the *patch* portion of that semantic version (see [Pre-Release](#Pre-Release) for more options).
-* If we aren't building the `master` or `main` branches , add `-SNAPSHOT` to the end of our version.
+* If we aren't building the `master` or `main` branches , add `-SNAPSHOT` to the end of our version if we see a `settings.gradle` file, which signals it's a Gradle project.
 * Set `version` in the `gradle.properties` file using `javaproperties`.
 * Write our version and tag to `stepvars/version` and `stepvars/tag` respectively in case we need them in other non-Gradle tools in subsequent build steps.
 
