@@ -47,7 +47,7 @@ fi
 tag=`semver get release`
 
 # neet to add pre-release marker to non-main branches
-if [[ $2 != "master" && $2 != "main" ]]
+if [[ $2 != "master" && $2 != "main" && -f settings.gradle ]]
 then
   tag=$tag-SNAPSHOT
 fi
