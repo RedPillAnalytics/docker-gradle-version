@@ -9,6 +9,8 @@ substitutions:
   # If it's a tag, image tag will be the tag
   # If it's not a tag or a PR, then it should be latest
   _IMAGE_NAME: ${_REPO_SHORT}:${_TAG_NAME:-latest}
+  # Test payloads
+  _PUSH: $(push.repository.html_url)
 steps:
 - name: gcr.io/$PROJECT_ID/project-version
   id: version
