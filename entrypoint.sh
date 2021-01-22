@@ -63,4 +63,4 @@ echo $version > $versionfile
 # update the version property
 javaproperties set -o props.temp $properties version $version
 mv props.temp $properties
-echo $tag
+echo $version

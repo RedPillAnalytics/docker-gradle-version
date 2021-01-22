@@ -38,12 +38,15 @@ I've done very little new development here... I'm standing on the shoulders of g
 - [GitHub CLI](https://cli.github.com/): For non-Gradle releases, the GitHub CLI can be used instead to publish releases back to GitHub. You can use [our pre-built container](https://github.com/RedPillAnalytics/docker-gh) for dealing with GitHub CLI. This repository is built using this technique, so take a look at [the `cloudbuild.yaml` file](cloudbuild.yaml) as a sample. In this example, we don't actually build tags, but instead tag the image as part of the merge into master.
 
 ## cloudbuild.yaml
-In our `cloudbuild.yaml` file, we include the `project-version` image as an early step, passing the built-in GCB variables `$REPO_NAME` and `BRANCH_NAME`:
+In our `cloudbuild.yaml` file, we include the `project-version` image as an early step, and define a payload substitution that allows us to get the git URL from the event payload. We then pass that substitution, called `$_REPO_URL` along with the built in substitution `BRANCH_NAME`:
 ```
+substitutions:
+  _REPO_URL: $(body.repository.html_url)
+steps:
 - name: gcr.io/$PROJECT_ID/project-version
   id: version
   args:
-   - $REPO_NAME
+   - $_REPO_URL
    - $BRANCH_NAME
   waitFor: ['-']
 ```
