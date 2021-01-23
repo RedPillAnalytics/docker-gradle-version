@@ -15,7 +15,7 @@ steps:
 - name: gcr.io/$PROJECT_ID/project-version
   id: version
   args:
-   - $REPO_URL
+   - $_REPO_URL
    - $BRANCH_NAME
   waitFor: ['-']
 - name: 'gcr.io/kaniko-project/executor:latest'
