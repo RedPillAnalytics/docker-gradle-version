@@ -1,7 +1,7 @@
 substitutions:
   # See if this is either a tag or a PR
   # Replace "/" in branch names with "-"
-  _TAG_NAME: ${TAG_NAME:-${_HEAD_BRANCH/\//-}}
+  _TAG_NAME: ${TAG_NAME:-${_HEAD_BRANCH//\//-}}
   # Capture long and short versions of the repository name
   _REPO_LONG: ${REPO_NAME#*/}
   _REPO_SHORT: ${REPO_NAME#*-}
