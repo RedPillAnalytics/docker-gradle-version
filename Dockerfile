@@ -1,7 +1,9 @@
 FROM python
 
 # Environment
-ENV GOBIN=/go/bin
+ENV GOBIN=/go/bin \
+    GO111MODULE=on
+    
 
 # Install go
 # Install lastversion

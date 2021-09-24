@@ -18,6 +18,8 @@ steps:
    - $_REPO_URL
    - $BRANCH_NAME
   waitFor: ['-']
+  # use Kaniko and --single-snapshot to reduce image size
+  # No need to combine multiple statements in a Dockerfile to reduce image size
 - name: 'gcr.io/kaniko-project/executor:latest'
   id: build
   args:
