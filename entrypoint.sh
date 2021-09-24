@@ -61,7 +61,8 @@ version="${tag:1}"
 
 # write to a file for access across steps
 echo $version > $versionfile
-echo ${version%"."*}.0 > $minorfile
+minor="${version%"."*}.0"
+echo $minor > $minorfile
 
 # update the version property
 javaproperties set -o props.temp $properties version $version
