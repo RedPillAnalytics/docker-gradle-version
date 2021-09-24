@@ -6,6 +6,7 @@ branch=$2
 stepvars="stepvars"
 tagfile="${stepvars}/tag"
 versionfile="${stepvars}/version"
+minorfile="${stepvars}/minor"
 default=0.1.0
 
 # Create stepvars directory if it doesn't exist
@@ -31,16 +32,16 @@ then
 fi
 
 # just in case it exists already
-rm -f .semver.yaml
+#rm -f .semver.yaml
 
 # If there is no alpha version, then bump
 if [[ $alpha == $stable ]]
 then
-  semver init --release $stable
+  semver init --force --release $stable
   semver up release > /dev/null
 # If there is an alpha version, use that
 else
-  semver init --release $alpha
+  semver init --force --release $alpha
 fi
 
 # get the modified version
@@ -57,8 +58,10 @@ echo $tag > $tagfile
 
 # get non-tag version
 version="${tag:1}"
+
 # write to a file for access across steps
 echo $version > $versionfile
+echo ${version%"."*}.0 > $minorfile
 
 # update the version property
 javaproperties set -o props.temp $properties version $version
